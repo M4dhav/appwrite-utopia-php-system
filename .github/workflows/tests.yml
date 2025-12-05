@@ -9,6 +9,9 @@ jobs:
       matrix:
         platform: [amd64, arm64]
 
+    env:
+      PLATFORM: ${{ matrix.platform }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
