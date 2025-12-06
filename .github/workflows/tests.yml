@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [amd64, arm64]
+        platform: [amd64, arm64, arm/v7, ppc64le]
 
     env:
       PLATFORM: ${{ matrix.platform }}
@@ -36,7 +36,7 @@ jobs:
       with:
         context: .
         push: false
-        tags: database-dev:${{ matrix.platform }}
+        tags: database-dev:${{ matrix.platform == 'arm/v7' && 'armv7' || matrix.platform }}
         load: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -60,4 +60,8 @@ jobs:
             docker compose exec tests vendor/bin/phpunit --configuration phpunit.xml --testsuite X86;
         elif [[ "${{ matrix.platform }}" == "arm64" ]]; then
             docker compose exec tests vendor/bin/phpunit --configuration phpunit.xml --testsuite ARM64;
+        elif [[ "${{ matrix.platform }}" == "arm/v7" ]]; then
+            docker compose exec tests vendor/bin/phpunit --configuration phpunit.xml --testsuite ARMV7;
+        elif [[ "${{ matrix.platform }}" == "ppc64le" ]]; then
+            docker compose exec tests vendor/bin/phpunit --configuration phpunit.xml --testsuite PPC;
         fi
