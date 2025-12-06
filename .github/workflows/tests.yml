@@ -10,7 +10,7 @@ jobs:
         platform: [amd64, arm64, arm/v7, ppc64le]
 
     env:
-      PLATFORM: ${{ matrix.platform }}
+      PLATFORM: ${{ matrix.platform == 'arm/v7' && 'armv7' || matrix.platform }}
 
     steps:
     - name: Checkout repository
