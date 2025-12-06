@@ -16,7 +16,7 @@ class System
 
     public const ARMV8 = 'armv8';
 
-    private const RegExX86 = '/(x86*|i386|i686)/';
+    private const RegExX86 = '/(x86_64|x86|i386|i686|amd64)/i';
 
     private const RegexARM64 = '/(arm64|aarch64)/';
 
