@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [amd64, arm64, arm/v7, ppc64le]
+        platform: [amd64, arm64, arm/v7, ppc64le, windows/amd64]
 
     env:
-      PLATFORM: ${{ matrix.platform == 'arm/v7' && 'armv7' || matrix.platform }}
+      PLATFORM: ${{ matrix.platform == 'arm/v7' && 'armv7' || matrix.platform == 'windows/amd64' && 'windows' || matrix.platform }}
 
     steps:
     - name: Checkout repository
@@ -36,11 +36,11 @@ jobs:
       with:
         context: .
         push: false
-        tags: database-dev:${{ matrix.platform == 'arm/v7' && 'armv7' || matrix.platform }}
+        tags: database-dev:${{ matrix.platform == 'arm/v7' && 'armv7' || matrix.platform == 'windows/amd64' && 'windows' || matrix.platform }}
         load: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
-        platforms: linux/${{ matrix.platform }}
+        platforms: ${{ matrix.platform == 'windows/amd64' && matrix.platform || format('linux/{0}', matrix.platform) }}
 
     - name: Start Containers
       run:  |
@@ -57,4 +57,6 @@ jobs:
             docker compose exec tests vendor/bin/phpunit --configuration phpunit.xml --testsuite ARMV7;
         elif [[ "${{ matrix.platform }}" == "ppc64le" ]]; then
             docker compose exec tests vendor/bin/phpunit --configuration phpunit.xml --testsuite PPC;
+        elif [[ "${{ matrix.platform }}" == "windows/amd64" ]]; then
+            docker compose exec tests vendor/bin/phpunit --configuration phpunit.xml --testsuite Windows;
         fi
