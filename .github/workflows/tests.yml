@@ -47,6 +47,13 @@ jobs:
         docker compose up -d
         sleep 10
 
+    - name: Debug container status
+      run: |
+        docker compose ps
+        echo "---- logs ----"
+        docker compose logs tests || true
+
+
     - name: Run Tests
       run: |
         if [[ "${{ matrix.platform }}" == "amd64" ]]; then
